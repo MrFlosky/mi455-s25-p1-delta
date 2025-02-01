@@ -53,7 +53,7 @@ public class MarbleGameSocket : MonoBehaviour
                     var x = float.Parse(tokens[2]);
                     var z = -float.Parse(tokens[3]);
                     float time = int.Parse(tokens[4]);
-                    if (players[playerId])
+                    if (players.ContainsKey(playerId))
                     {
                         players[playerId].Launch(x, z, time);
                     }
@@ -81,7 +81,7 @@ public class MarbleGameSocket : MonoBehaviour
                     print("here");
                     var playerId = tokens[1];
 
-                    if (players[playerId])
+                    if (players.ContainsKey(playerId))
                     {
                         Destroy(players[playerId].gameObject);
                         players.Remove(playerId);
