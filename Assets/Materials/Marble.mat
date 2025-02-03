@@ -96,8 +96,8 @@ Material:
     - _SrcBlend: 1
     - _UVSec: 0
     - _ZWrite: 1
-    - _hueOffset: -0.88
-    - _saturationOffset: 3.38
+    - _hueOffset: 1
+    - _saturationOffset: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Colors: {r: -1.52, g: 0.01, b: -2.64, a: 0}
