@@ -25,9 +25,7 @@ public class Marble : MonoBehaviour
     {
         if (renderer != null)
         {
-            // Generate a random color
-            Color randomColor = new Color(Random.value, Random.value, Random.value);
-            renderer.material.color = randomColor;
+            SetColor();
         }
         else
         {
@@ -38,5 +36,19 @@ public class Marble : MonoBehaviour
     public void SetNameplate(string newName)
     {
         nameplate.text = newName;
+    }
+
+    public void SetColor()
+    {
+        // We will need to make sure only this instances color is being offset
+        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+        
+        float hueVal = Random.Range(-1.0f, 1.0f);
+        float satVal = Random.Range(0f, 10.0f);
+        
+        propertyBlock.SetFloat("_hueOffset", hueVal);
+        propertyBlock.SetFloat("_saturationOffset", satVal);
+        
+        this.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
     }
 }

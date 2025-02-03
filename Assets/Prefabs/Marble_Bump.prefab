@@ -201,9 +201,8 @@ GameObject:
   - component: {fileID: 5817871609011407418}
   - component: {fileID: 6507131538328499560}
   - component: {fileID: 4873221885354937599}
-  - component: {fileID: 6766464896647539196}
   m_Layer: 0
-  m_Name: Marble
+  m_Name: Marble_Bump
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -346,21 +345,9 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8918168330690129112}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c4976e094acbf284ab4d45c088e54597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   deathSpeedThreshold: 10
---- !u!114 &6766464896647539196
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8918168330690129112}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e4e2733c6f85634eb471bc55fabd627, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
