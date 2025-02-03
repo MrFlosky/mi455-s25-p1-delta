@@ -252,7 +252,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: b3564caf7755eee47b058cedeeed975b, type: 2}
+  - {fileID: 2100000, guid: 3ff1fc47b1f3889478b1e4c835f3cfdb, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -335,6 +335,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   powerModifier: 0.1
+  maxSpeed: 10
   renderer: {fileID: 3136253312580108563}
   nameplate: {fileID: 8313755847002414261}
 --- !u!114 &4873221885354937599
@@ -349,3 +350,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c4976e094acbf284ab4d45c088e54597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  deathSpeedThreshold: 10
