@@ -11,6 +11,13 @@ public class Marble : MonoBehaviour
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private MeshRenderer renderer;
     [SerializeField] private TMP_Text nameplate;
+    
+    private Rigidbody rb;
+
+    void Start()
+    {
+        rb = GetComponent<Rigidbody>();
+    }
     public void Launch(float x, float z, float timeHeld)
     {
         var v = new Vector3(x, 0, z) * (Mathf.Min(timeHeld, 300f) * powerModifier);
@@ -50,5 +57,33 @@ public class Marble : MonoBehaviour
         propertyBlock.SetFloat("_saturationOffset", satVal);
         
         this.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
+    }
+
+    private void Update()
+    {
+        if (transform.position.y < -10f)
+        {
+            DieAndRespawn();
+        }
+    }
+    
+    void DieAndRespawn()
+    {
+        // Disable this object (simulating death)
+        gameObject.SetActive(false);
+
+        // Respawn after 2 seconds
+        Invoke(nameof(Respawn), 2f);
+    }
+
+    void Respawn()
+    {
+        // Reset position and velocity
+        rb.velocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+        transform.position = new Vector3(Random.Range(-30, 30), 1.66f, Random.Range(-30, 30));
+
+        // Re-enable the object
+        gameObject.SetActive(true);
     }
 }
