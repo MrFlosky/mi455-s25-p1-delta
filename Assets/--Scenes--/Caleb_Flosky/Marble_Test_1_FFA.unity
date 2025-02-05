@@ -872,7 +872,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d52af0223f168904fac524b7568cbb4c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  marblePrefab: {fileID: 6507131538328499560, guid: bff47e96f8a3e5f408c6affca13cea49, type: 3}
+  marblePrefab: {fileID: 6507131538328499560, guid: d0031ecb82d84304882f9d115f0cc2eb, type: 3}
   lobbyCode: 0
   lobbyCodeText: {fileID: 2083350442}
 --- !u!1001 &2083350441
