@@ -93,7 +93,7 @@ public class MarbleGameSocket : MonoBehaviour
                 }
                 case "del":
                 {
-                    int lobbyCodeToken = int.Parse(tokens[3]);
+                    int lobbyCodeToken = int.Parse(tokens[2]);
                     if (lobbyCodeToken != lobbyCode)
                         return;                    
                     
