@@ -11,6 +11,7 @@ public class LobbySocket : MonoBehaviour
 
     WebSocket ws;
     string lastMsg;
+    int lobbyCode = Random.Range(10000, 99999);
 
     [SerializeField] private TMP_Text player_list;
 
@@ -54,16 +55,23 @@ public class LobbySocket : MonoBehaviour
                 {
                     var playerId = tokens[1];
                     var playerName = tokens[2];
+                    int lobbyCodeToken = int.Parse(tokens[3]);
+                    
+                    if (lobbyCodeToken != lobbyCode)
+                        return;
                     
                     players[playerId] = playerName;
                     
-                
                     ws.Send("player_added|"+playerId);
                     break;
                 }
                 case "del":
                 {
                     var playerId = tokens[1];
+                    int lobbyCodeToken = int.Parse(tokens[2]);
+                                        
+                    if (lobbyCodeToken != lobbyCode)
+                        return;
 
                     if (players.ContainsKey(playerId))
                     {
