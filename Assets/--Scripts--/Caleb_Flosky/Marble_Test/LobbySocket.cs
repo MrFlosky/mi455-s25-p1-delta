@@ -14,10 +14,12 @@ public class LobbySocket : MonoBehaviour
     int lobbyCode = Random.Range(10000, 99999);
 
     [SerializeField] private TMP_Text player_list;
+    
+    [SerializeField] private string websocketURL;
 
     void Start()
     {
-        ws = new WebSocket("ws://goldenrod-majestic-board.glitch.me/ws");
+        ws = new WebSocket(websocketURL);
         ws.OnMessage += Ws_OnMessage;
         ws.OnOpen += Ws_OnOpen;
         // Add error handling

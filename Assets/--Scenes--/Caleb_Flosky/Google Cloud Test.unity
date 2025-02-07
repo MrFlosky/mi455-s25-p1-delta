@@ -949,7 +949,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   marblePrefab: {fileID: 6507131538328499560, guid: d0031ecb82d84304882f9d115f0cc2eb, type: 3}
   lobbyCode: 0
-  lobbyCodeText: {fileID: 0}
+  lobbyCodeText: {fileID: 401199518}
+  websocketURL: wss://marble-324115543738.us-central1.run.app/ws
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

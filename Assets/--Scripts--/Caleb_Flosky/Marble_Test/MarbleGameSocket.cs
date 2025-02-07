@@ -15,19 +15,20 @@ public class MarbleGameSocket : MonoBehaviour
     [SerializeField] int lobbyCode = 0;
     
     public TMP_Text lobbyCodeText;
+    
+    [SerializeField] private string websocketURL;
 
     void Start()
     {
-        ws = new WebSocket("ws://goldenrod-majestic-board.glitch.me/ws");
+        ws = new WebSocket(websocketURL);
+        ws.SslConfiguration.EnabledSslProtocols = System.Security.Authentication.SslProtocols.Tls12;
+        
         ws.OnMessage += Ws_OnMessage;
         ws.OnOpen += Ws_OnOpen;
         // Add error handling
         ws.OnError += (sender, e) => Debug.LogError(string.Format("WebSocket Error: {0}", e.Message));
         ws.Connect();
         // REMOVE THE IMMEDIATE ws.Send() HERE
-        
-        lobbyCode = Random.Range(10000, 99999);
-        lobbyCodeText.text = "Lobby Code:\n" + lobbyCode;
     }
 
     private void Ws_OnOpen(object sender, System.EventArgs e)
@@ -35,6 +36,8 @@ public class MarbleGameSocket : MonoBehaviour
         Debug.Log("Web Socket is now connected");
         // Send the message only after the connection is confirmed open
         ws.Send("Unity is now connected");
+        lobbyCode = Random.Range(10000, 99999);
+        lobbyCodeText.text = "Lobby Code:\n" + lobbyCode;
     }
     
     private void Ws_OnMessage(object sender, MessageEventArgs e)
