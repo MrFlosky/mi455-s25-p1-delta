@@ -21,7 +21,7 @@ public class WebConnection : MonoBehaviour
 // Simple class that matches JSON
 public class DeviceData
 {
-    public float rotation;   
+    public string username;
     public float fb_tilt;    
     public float lr_tilt;
 }
@@ -72,24 +72,24 @@ void ConvertToThreadSafeDict(Dictionary<int, DeviceData> localServerDict)
         unityServerDict.TryRemove(key, out _);
     }
 
-    // Get keys in updated server that missing from Unity,
-    // make a ball for them.
-    var newKeys = localServerDict.Keys.Except(unityServerDict.Keys);
-    foreach(var key in newKeys)
-    {
-        GameObject newBall = Instantiate(ballFab);
-        newBall.GetComponent<Ball>().Init(key); 
-    }
-
+    // First update dictionary and track which ones are new
     foreach (KeyValuePair<int, DeviceData> pair in localServerDict)
     {
+        bool isNew = !unityServerDict.ContainsKey(pair.Key);
+        
         unityServerDict.AddOrUpdate
         (
-            pair.Key,           // string ID from server
-            pair.Value,         // DeviceData object
-            (key, oldValue) => pair.Value // function to determine new key value (key already exited)
+            pair.Key,           
+            pair.Value,         
+            (key, oldValue) => pair.Value 
         );
 
+        // If this was a new key, create a ball
+        if (isNew)
+        {
+            GameObject newBall = Instantiate(ballFab);
+            newBall.GetComponent<Ball>().Init(pair.Key);
+        }
     }
 }
 
@@ -97,7 +97,7 @@ void Update()
 {
     foreach (var pair in unityServerDict)
 {
-    Debug.Log($"ID: {pair.Key}, Rotation: {pair.Value.rotation}, FB Tilt: {pair.Value.fb_tilt}, LR Tilt: {pair.Value.lr_tilt}");
+    Debug.Log($"ID: {pair.Key}, Username: {pair.Value.username} FB Tilt: {pair.Value.fb_tilt}, LR Tilt: {pair.Value.lr_tilt}");
 }
 }
 
