@@ -604,6 +604,7 @@ MonoBehaviour:
   marblePrefab: {fileID: 6507131538328499560, guid: bff47e96f8a3e5f408c6affca13cea49, type: 3}
   lobbyCode: 0
   lobbyCodeText: {fileID: 718798778}
+  websocketURL: ws://goldenrod-majestic-board.glitch.me/ws
 --- !u!1001 &6083155335239170743
 PrefabInstance:
   m_ObjectHideFlags: 0

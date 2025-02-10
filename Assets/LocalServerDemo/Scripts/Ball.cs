@@ -1,9 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
+    TMP_Text usernameTxt;
+
     Rigidbody rigid;
     // Key for accessing device dict
     int ID;
@@ -19,6 +22,7 @@ public class Ball : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        usernameTxt = transform.GetChild(0).GetComponent<TMP_Text>();
         rigid = GetComponent<Rigidbody>();
         SetColor();
     }
@@ -29,6 +33,7 @@ public class Ball : MonoBehaviour
         if(WebConnection.unityServerDict.TryGetValue(ID, out _))
         {
             data = WebConnection.unityServerDict[ID];
+            usernameTxt.text = data.username; // MOVEEEEEEEEEEEEEEEEEEEEEE
             rigid.AddForce(new Vector3((data.lr_tilt / 100)*power, 0, 0));
             rigid.AddForce(new Vector3(0, 0, (-data.fb_tilt / 100)*power));
         }

@@ -604,6 +604,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player_list: {fileID: 378029595}
+  websocketURL: ws://goldenrod-majestic-board.glitch.me/ws
 --- !u!1 &1464939800
 GameObject:
   m_ObjectHideFlags: 0
