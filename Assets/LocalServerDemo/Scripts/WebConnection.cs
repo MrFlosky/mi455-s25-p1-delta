@@ -9,7 +9,7 @@ using UnityEngine.Networking;
 
 public class WebConnection : MonoBehaviour 
 {
-    private string webPageUrl = "http://localhost:8080/sensorData";
+    private string webPageUrl = "https://calm-concise-longhorn.ngrok.app/sensorData";
     public TMP_Text txt;
     public GameObject ballFab;
 
