@@ -29,13 +29,37 @@ public class TimerSystem : MonoBehaviour
     private bool isFlashing = false;
     private Coroutine flashCoroutine;
 
+    private string timerType = "";
+    private Action functionAtEnd = null;
+
     // Start is called before the first frame update
     void Start()
     {
+        /*
         timerDefault = 0;
         timerDefault += (seconds + (minutes * 60) + (hours * 60 * 60));
         currentSeconds = timerDefault;
         timerText.color = startColor;
+        */
+    }
+
+    public void SetTimer(int seconds, int minutes, int hours, string timerType, Action functionAtEnd = null)
+    {
+        // set the timer
+        timerDefault = 0;
+        timerDefault += (seconds + (minutes * 60) + (hours * 60 * 60));
+        currentSeconds = timerDefault;
+        
+        // set the color
+        timerText.color = startColor;
+        
+        // add the timer type
+        if (timerType == "")
+            this.timerType = timerType;
+        else
+            this.timerType = timerType + ": ";
+        
+        this.functionAtEnd = functionAtEnd;
     }
 
     // Update is called once per frame
@@ -45,22 +69,22 @@ public class TimerSystem : MonoBehaviour
         {
             flashCoroutine = StartCoroutine(FlashText());
         }
-        return;
+        //return;
 
         if ((currentSeconds -= Time.deltaTime) <= 0)
         {
             TimeUp();
-            EndGame();
+            //EndGame();
         }
         else
         {
             if (showMilliseconds)
             {
-                timerText.text = TimeSpan.FromSeconds(currentSeconds).ToString(@"hh\:mm\:ss\:fff");
+                timerText.text = timerType + TimeSpan.FromSeconds(currentSeconds).ToString(@"hh\:mm\:ss\:fff");
             }
             else
             {
-                timerText.text = TimeSpan.FromSeconds(currentSeconds).ToString(@"hh\:mm\:ss");
+                timerText.text = timerType + TimeSpan.FromSeconds(currentSeconds).ToString(@"hh\:mm\:ss");
             }
 
             if (currentSeconds <= 10f && !isFlashing)
@@ -77,12 +101,17 @@ public class TimerSystem : MonoBehaviour
     private void TimeUp()
     {
         if (showMilliseconds)
-            timerText.text = "00:00:00:000";
+            timerText.text = timerType + "00:00:00:000";
         else
-            timerText.text = "00:00:00";
+            timerText.text = timerType + "00:00:00";
 
         StopFlashing();  // Stop flashing when time is up
         timerText.color = startColor;  // Reset to default color
+
+        if (functionAtEnd == null) return;
+        
+        functionAtEnd?.Invoke();
+        functionAtEnd = null;
     }
 
     private void EndGame()
