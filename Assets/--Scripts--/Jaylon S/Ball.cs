@@ -70,7 +70,9 @@ public class Ball : MonoBehaviour
     [SerializeField] private float maxSpeed = 10f;
     // Constant mult for acceleration strength
     [SerializeField] private float accelerationMultiplier = 15f;
-    // Maps tilt strength to acceleration response, affects how sharply the ball changes speed
+    /**Maps tilt steepness to acceleration mult, affects how sharply the ball changes speed. 
+    Linear down line = lesser multiplier as tilt becomes steeper. Thus, ball accelerates slower.
+    */
     [SerializeField] private AnimationCurve accelerationCurve = new AnimationCurve();
 
 
