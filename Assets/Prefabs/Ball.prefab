@@ -117,6 +117,34 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   power: 6
+  maxSpeed: 5
+  tiltThreshold: 0.1
+  accelerationRate: 15
+  accelerationMultiplier: 15
+  accelerationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: -0.058227327
+      outSlope: -0.058227327
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.994998
+      value: 0.9420639
+      inSlope: -0.058227327
+      outSlope: -0.058227327
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!54 &990596929963522938
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -126,7 +154,7 @@ Rigidbody:
   m_GameObject: {fileID: 1654361192903131208}
   serializedVersion: 4
   m_Mass: 1
-  m_Drag: 0
+  m_Drag: 0.05
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -143,7 +171,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!33 &6578416946171929439
 MeshFilter:
   m_ObjectHideFlags: 0

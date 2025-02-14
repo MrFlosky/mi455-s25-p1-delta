@@ -12,35 +12,150 @@ public class Ball : MonoBehaviour
     int ID;
     // Motion data for this users ball
     WebConnection.DeviceData data;
+
     [SerializeField] float power;
 
+    /// <summary>
+    /// /Set data upon this ball being initialized so we need only set username once.
+    /// </summary>
+    /// <param name="id"></param>
     public void Init(int id)
     {
         ID = id;
+        data = WebConnection.unityServerDict[ID];
+        usernameTxt.text = data.username; 
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         usernameTxt = transform.GetChild(0).GetComponent<TMP_Text>();
         rigid = GetComponent<Rigidbody>();
         SetColor();
     }
 
-    // Update is called once per frame
+    /// <summary>
+    /// Reccomended to use fixed update for physics updates.
+    /// </summary>
+    void FixedUpdate()
+    {
+        //MoveBallDefault(data.lr_tilt, data.fb_tilt);
+        MoveBallAnimCurve(data.lr_tilt, data.fb_tilt);
+    }
+
+    /// <summary>
+    /// Constantly update the data from the server.
+    /// </summary>
     void Update()
     {
         if(WebConnection.unityServerDict.TryGetValue(ID, out _))
         {
             data = WebConnection.unityServerDict[ID];
-            usernameTxt.text = data.username; // MOVEEEEEEEEEEEEEEEEEEEEEE
-            rigid.AddForce(new Vector3((data.lr_tilt / 100)*power, 0, 0));
-            rigid.AddForce(new Vector3(0, 0, (-data.fb_tilt / 100)*power));
         }
         else
         {
             Destroy(this.gameObject);
         }
+    }
+
+    //[SerializeField] private float acceleration = 30f;
+    //[SerializeField] private float deceleration = 20f;
+    // Adjust to change the 3rd increment at which the ball begins moving.
+    //[SerializeField] private float tiltThreshold = 3f;
+    //[SerializeField] private float stoppingThreshold = 0.5f;
+    
+    
+    // For MoveBallAnimCurve
+    private Vector3 currentVelocity;
+    [SerializeField] private float maxSpeed = 10f;
+    [SerializeField] private float accelerationRate = 15f;
+    [SerializeField] private float accelerationMultiplier = 15f;
+    [SerializeField] private AnimationCurve accelerationCurve = new AnimationCurve();
+
+
+    /// <summary>
+    /// The initial tilt makes the ball accelerate fast, while the steeper tilt to reach max speed accelerates slower.
+    /// </summary>
+    /// <param name="leftRightGyro">
+    // Left right/gyro data
+    // </param>
+    /// <param name="upDownGyro">
+    // Up/down gyro data
+    // </param>
+    void MoveBallAnimCurve(float leftRightGyro, float upDownGyro)
+    {
+        Vector3 input = new Vector3(leftRightGyro, 0, -upDownGyro);
+        
+        Vector3 targetVelocity = Vector3.ClampMagnitude(input, maxSpeed) * power;
+
+        // Use animation curve to evaluate acceleration
+        float inputStrength = input.magnitude / (maxSpeed * power);
+        float accelerationFactor = accelerationCurve.Evaluate(inputStrength);
+        
+        float deltaTime = Time.deltaTime;
+        Vector3 acceleration = (targetVelocity - currentVelocity) * accelerationFactor * accelerationMultiplier;
+        currentVelocity += acceleration * deltaTime;
+
+            Debug.Log($"Speed: {currentVelocity.magnitude:F2} | " +
+              $"AccelFactor: {accelerationFactor:F2} | " +
+              $"Target Speed: {targetVelocity.magnitude:F2}");
+        rigid.velocity = currentVelocity;
+    }
+
+    // void MoveBallPeppy2(float leftRightGyro, float upDownGyro)
+    // {
+    //     Vector3 input = new Vector3(leftRightGyro, 0, -upDownGyro);
+        
+    //     Vector3 targetVelocity = Vector3.ClampMagnitude(input, maxSpeed) * power;
+
+    //     // Apply acceleration curve instead of linear movement
+    //     float deltaTime = Time.deltaTime;
+    //     Vector3 acceleration = (targetVelocity - currentVelocity) * accelerationRate;
+    //     currentVelocity += acceleration * deltaTime;
+
+    //     rigid.drag = input.magnitude > 0 ? 0.5f : 2f; // More drag when not moving
+    //     rigid.velocity = currentVelocity;
+    // }
+
+
+    // void MoveBallPeppy(float leftRightGyro, float upDownGyro)
+    // {
+    //     Vector3 input = new Vector3(leftRightGyro, 0, -upDownGyro);
+    //     Vector3 targetVelocity = Vector3.ClampMagnitude(input, maxSpeed) * power;
+    //     Debug.Log(currentVelocity);
+    //     float deltaTime = Time.deltaTime;
+    //     if (input.magnitude > 0)
+    //     {
+    //         currentVelocity = Vector3.MoveTowards(
+    //             currentVelocity,
+    //             targetVelocity,
+    //             acceleration * deltaTime
+    //         );
+    //     }
+    //     else
+    //     {
+    //         currentVelocity = Vector3.MoveTowards(
+    //             currentVelocity,
+    //             Vector3.zero,
+    //             deceleration * deltaTime
+    //         );
+            
+    //         if (currentVelocity.magnitude < stoppingThreshold)
+    //         {
+    //             currentVelocity = Vector3.zero;
+    //         }
+    //     }
+
+    //     rigid.velocity = currentVelocity;
+    // }
+
+    /// <summary>
+    /// Used to move the ball.
+    /// This one feels more like you're rolling a ball.
+    /// </summary>
+    void MoveBallDefault(float leftRightGyro, float upDownGyro)
+    {
+        rigid.AddForce(new Vector3(data.lr_tilt/ 10 *power, 0, 0));
+        rigid.AddForce(new Vector3(0, 0, -data.fb_tilt/ 10 *power));
     }
 
     public void SetColor()

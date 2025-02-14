@@ -9,7 +9,8 @@ using UnityEngine.Networking;
 
 public class WebConnection : MonoBehaviour 
 {
-    private string webPageUrl = "https://calm-concise-longhorn.ngrok.app/sensorData";
+    private string nonLocalUrl = "https://calm-concise-longhorn.ngrok.app/sensorData";
+    private string localUrl = "http://localhost:8080/sensorData";
     public TMP_Text txt;
     public GameObject ballFab;
 
@@ -34,7 +35,7 @@ IEnumerator GetSensorData()
 {
     while (true)
     {
-        UnityWebRequest request = UnityWebRequest.Get(webPageUrl);
+        UnityWebRequest request = UnityWebRequest.Get(nonLocalUrl);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -97,7 +98,7 @@ void Update()
 {
     foreach (var pair in unityServerDict)
 {
-    Debug.Log($"ID: {pair.Key}, Username: {pair.Value.username} FB Tilt: {pair.Value.fb_tilt}, LR Tilt: {pair.Value.lr_tilt}");
+    //Debug.Log($"ID: {pair.Key}, Username: {pair.Value.username} FB Tilt: {pair.Value.fb_tilt}, LR Tilt: {pair.Value.lr_tilt}");
 }
 }
 
