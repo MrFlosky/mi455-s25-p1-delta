@@ -1,6 +1,8 @@
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor.ShaderGraph;
 using System.Reflection;
+#endif
 
 #if !UNITY_2019_1_OR_NEWER
 
