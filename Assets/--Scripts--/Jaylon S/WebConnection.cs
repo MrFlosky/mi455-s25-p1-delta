@@ -17,6 +17,7 @@ public class WebConnection : MonoBehaviour
     void Start()
     {
         StartCoroutine(GetSensorData());
+        //StartCoroutine(PostToScoreboard("123", "DOG", true));
     }
 
 // Simple class that matches JSON
@@ -91,6 +92,42 @@ void ConvertToThreadSafeDict(Dictionary<int, DeviceData> localServerDict)
             GameObject newBall = Instantiate(ballFab);
             newBall.GetComponent<Ball>().Init(pair.Key);
         }
+    }
+}
+
+public class ScoreboardData
+{
+    public string userID;
+    public string username;    
+    public bool isAlive;
+}
+
+private IEnumerator PostToScoreboard(string userID, string username, bool isAlive)
+{
+    ScoreboardData data = new ScoreboardData
+    {
+        userID = userID,
+        username = username,
+        isAlive = isAlive
+    };
+
+    string jsonData = JsonUtility.ToJson(data);
+    
+    UnityWebRequest request = new UnityWebRequest("http://localhost:8080/scoreboard", "POST");
+    byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
+    request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+    request.downloadHandler = new DownloadHandlerBuffer();
+    request.SetRequestHeader("Content-Type", "application/json");
+
+    yield return request.SendWebRequest();
+
+    if (request.result != UnityWebRequest.Result.Success)
+    {
+        Debug.LogError($"Error: {request.error}");
+    }
+    else
+    {
+        Debug.Log("Scoreboard updated successfully!");
     }
 }
 
