@@ -62,13 +62,15 @@ public class Ball : MonoBehaviour
     // Adjust to change the 3rd increment at which the ball begins moving.
     //[SerializeField] private float tiltThreshold = 3f;
     //[SerializeField] private float stoppingThreshold = 0.5f;
-    
+    //[SerializeField] private float accelerationRate = 15f;
     
     // For MoveBallAnimCurve
     private Vector3 currentVelocity;
+    // Max speed ball may reach
     [SerializeField] private float maxSpeed = 10f;
-    [SerializeField] private float accelerationRate = 15f;
+    // Constant mult for acceleration strength
     [SerializeField] private float accelerationMultiplier = 15f;
+    // Maps tilt strength to acceleration response, affects how sharply the ball changes speed
     [SerializeField] private AnimationCurve accelerationCurve = new AnimationCurve();
 
 
@@ -83,12 +85,13 @@ public class Ball : MonoBehaviour
     // </param>
     void MoveBallAnimCurve(float leftRightGyro, float upDownGyro)
     {
+        // Gyro input into movement direction
         Vector3 input = new Vector3(leftRightGyro, 0, -upDownGyro);
-        
-        Vector3 targetVelocity = Vector3.ClampMagnitude(input, maxSpeed) * power;
+        // Calculate desired velocity based on input, capped at max speed
+        Vector3 targetVelocity = Vector3.ClampMagnitude(input, maxSpeed) * power; // keep direction of ball, but if speed(magnitude) is too big clamp it
 
         // Use animation curve to evaluate acceleration
-        float inputStrength = input.magnitude / (maxSpeed * power);
+        float inputStrength = input.magnitude / (maxSpeed * power); // Calculate how much of max speed trying to reach 
         float accelerationFactor = accelerationCurve.Evaluate(inputStrength);
         
         float deltaTime = Time.deltaTime;
