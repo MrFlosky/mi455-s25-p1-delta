@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 7439194186138326379}
   - component: {fileID: 990596929963522938}
   - component: {fileID: 6578416946171929439}
+  - component: {fileID: 8934300164437192636}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -118,8 +119,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   power: 6
   maxSpeed: 5
-  tiltThreshold: 0.1
-  accelerationRate: 15
   accelerationMultiplier: 15
   accelerationCurve:
     serializedVersion: 2
@@ -180,6 +179,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1654361192903131208}
   m_Mesh: {fileID: 10207, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &8934300164437192636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654361192903131208}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b7662c71db90c6345bddf4c07ea6bd70, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2974821438876918633
 GameObject:
   m_ObjectHideFlags: 0
