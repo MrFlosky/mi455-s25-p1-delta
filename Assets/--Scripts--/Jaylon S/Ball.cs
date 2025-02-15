@@ -30,6 +30,10 @@ public class Ball : MonoBehaviour
     {
         usernameTxt = transform.GetChild(0).GetComponent<TMP_Text>();
         rigid = GetComponent<Rigidbody>();
+        // Register this Ball instance with the GameManager when it is spawned
+
+        GameManager.instance.RegisterBall(this);
+
         SetColor();
     }
 

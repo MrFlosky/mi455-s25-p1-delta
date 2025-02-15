@@ -10,16 +10,24 @@ public class GameManager : MonoBehaviour
     [Tooltip("The list of players' balls on screen")]
     public List<Ball> balls = null;
 
-    // Start is called before the first frame update
-    void Start()
+    private void Awake()
     {
-        balls = transform.GetComponentsInChildren<Ball>().ToList();
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void RegisterBall(Ball newBall)
     {
-        
+        if (!allBalls.Contains(newBall))
+        {
+            allBalls.Add(newBall);
+        }
     }
 
     public void StartGame()
