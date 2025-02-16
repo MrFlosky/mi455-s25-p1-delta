@@ -167,4 +167,38 @@ public class Ball : MonoBehaviour
             rendererTrans.Rotate(rotationAxis, rotationSpeed * Time.deltaTime, Space.World);
         }
     }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Ball otherBall = collision.gameObject.GetComponent<Ball>();
+        // Only handle collision if this ball ball with lower instance ID to avoid double call
+        if (otherBall != null && GetInstanceID() < otherBall.GetInstanceID())
+        {
+            BallCollision(otherBall);
+        }
+    }
+
+    [Header("Physics Properties")]
+    [SerializeField] private float mass = 1f;
+    [SerializeField] private float bounciness = 0.8f; // 0 = no bounce, 1 = perfect bounce
+    public void BallCollision(Ball otherBall)
+    {
+        // Calculate collision normal (direction of this ball to the other)
+        Vector3 normal = (otherBall.transform.position - transform.position).normalized;
+
+        // Calculate relative velocity
+        Vector3 relativeVelocity = otherBall.currentVelocity - currentVelocity;
+
+        // Calculate impulse
+        // dot product: how much does relative velocity project onto the normal, i.e. how fast moving towards eachother?
+        float impulseStrength = -(bounciness) * Vector3.Dot(relativeVelocity, normal); 
+        impulseStrength /= (1 / mass + 1 / otherBall.mass);
+
+        // Apply impulse to both balls
+        Vector3 impulse = normal * impulseStrength;
+        currentVelocity -= impulse / mass;
+        otherBall.currentVelocity += impulse / otherBall.mass;
+    }
+
+
 }
