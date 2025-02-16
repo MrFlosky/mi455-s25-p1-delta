@@ -24,9 +24,9 @@ public class GameManager : MonoBehaviour
 
     public void RegisterBall(Ball newBall)
     {
-        if (!Balls.Contains(newBall))
+        if (!balls.Contains(newBall))
         {
-            Balls.Add(newBall);
+            balls.Add(newBall);
         }
     }
 
