@@ -33,7 +33,6 @@ public class Ball : MonoBehaviour
         // Register this Ball instance with the GameManager when it is spawned
 
         //GameManager.instance.RegisterBall(this);
-
         SetColor();
     }
 
@@ -127,7 +126,7 @@ public class Ball : MonoBehaviour
         Vector3 acceleration = (targetVelocity - currentVelocity) * accelerationFactor * accelerationMultiplier;         
         currentVelocity += acceleration * deltaTime;          
         
-        Debug.Log($"Input Strength: {inputStrength:F2} | Accel Factor: {accelerationFactor:F2} | Tilt: {leftRightGyro:F1}°, {upDownGyro:F1}° ");              
+        //Debug.Log($"Input Strength: {inputStrength:F2} | Accel Factor: {accelerationFactor:F2} | Tilt: {leftRightGyro:F1}°, {upDownGyro:F1}° ");              
         
         rigid.velocity = currentVelocity;     
     }

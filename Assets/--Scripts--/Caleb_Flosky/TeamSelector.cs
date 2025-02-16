@@ -37,6 +37,9 @@ public class TeamSelector : MonoBehaviour
         
         // get the randomly chosen initial id
         var initialZombieID = keys[Random.Next(keys.Count)];
+
+        GameObject intitialZombieObj = WebConnection.playerObjDict[initialZombieID];
+        intitialZombieObj.GetComponent<PlayerTeam>().team = PlayerTeam.Team.Infected;
         
         print("initialZombieID: " + initialZombieID);
 

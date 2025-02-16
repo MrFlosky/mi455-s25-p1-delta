@@ -29,13 +29,16 @@ public class DeviceData
 
 // Holds all server data
 public static ConcurrentDictionary<int, DeviceData> unityServerDict = new ConcurrentDictionary<int, DeviceData>();
+
+// Connects ID to player's marble gameobject. Seperate because concurrent dict is constantly being updated with new data.
+public static Dictionary<int, GameObject> playerObjDict = new Dictionary<int, GameObject>();
  
-// Updated coroutine
+// Gets all user data from server as dictionary, converts to unity dictionary.
 IEnumerator GetSensorData() 
 {
     while (true)
     {
-        UnityWebRequest request = UnityWebRequest.Get(localUrl);
+        UnityWebRequest request = UnityWebRequest.Get(nonLocalUrl);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -71,6 +74,9 @@ void ConvertToThreadSafeDict(Dictionary<int, DeviceData> localServerDict)
     foreach(var key in DeletedKeys)
     {
         unityServerDict.TryRemove(key, out _);
+
+        playerObjDict.Remove(key);
+        //Debug.Log(playerObjDict + "DELETED");
     }
 
     // First update dictionary and track which ones are new
@@ -91,6 +97,9 @@ void ConvertToThreadSafeDict(Dictionary<int, DeviceData> localServerDict)
             GameObject newBall = Instantiate(ballFab);
             newBall.transform.position = new Vector3(0,20f,0);
             newBall.GetComponent<Ball>().Init(pair.Key);
+
+            playerObjDict[pair.Key] = newBall;
+            //Debug.Log(playerObjDict.Keys);
         }
     }
 }
