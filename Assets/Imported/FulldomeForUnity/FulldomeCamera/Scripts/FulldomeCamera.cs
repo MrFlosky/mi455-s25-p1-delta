@@ -58,6 +58,8 @@ namespace Avante
 
 		RenderTexture _cubemapFbo;
 
+		[SerializeField] private Camera UI_Camera;
+
 		bool _IsFulldome { get { return (orientation == Orientation.Fulldome); } }
 		Camera _TargetCamera { get { return (mainCamera ? mainCamera : Camera.main); } }
 		Transform _Transform { get { return _TargetCamera.transform; } }
@@ -94,7 +96,7 @@ namespace Avante
 		{
 			if (_TargetCamera == null)
 				Destroy(this);
-			//_TargetCamera.enabled = false;
+			_TargetCamera.enabled = false;
 		}
 
 		void Initialize()
@@ -125,15 +127,14 @@ namespace Avante
 
 		IEnumerator RenderFrame()
 		{
-			yield return new WaitForEndOfFrame();
+			yield return new WaitForEndOfFrame(); // Wait for everything (including UI) to render
 
-			// Save camera settings
+			// Render the cubemap first
 			var eyesEyeSepBackup = _TargetCamera.stereoSeparation;
-			// Render cubemap
 			_TargetCamera.stereoSeparation = 0;
 			_TargetCamera.RenderToCubemap(_cubemapFbo, _FaceMask, Camera.MonoOrStereoscopicEye.Mono);
-			// Rollback camera settings
 			_TargetCamera.stereoSeparation = eyesEyeSepBackup;
+
 
 			//if (renderEquirect && cubemapFbo)
 			//cubemapFbo.ConvertToEquirect(equirectFbo, Camera.MonoOrStereoscopicEye.Mono);
@@ -144,6 +145,9 @@ namespace Avante
 			CubemapToDomeMaterial.SetInt("_Masked", (masked ? 1 : 0));
 			CubemapToDomeMaterial.SetVector("_Rotation", _Transform.rotation.eulerAngles);
 			Graphics.Blit(_cubemapFbo, domemasterFbo, CubemapToDomeMaterial);
+			
+			UI_Camera.Render();
+
 		}
 
 
