@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
     public static GameManager instance = null;
 
     [Tooltip("The list of players' balls on screen")]
-    public List<Ball> balls = null;
+    public List<Ball> Balls = null;
 
     private void Awake()
     {
