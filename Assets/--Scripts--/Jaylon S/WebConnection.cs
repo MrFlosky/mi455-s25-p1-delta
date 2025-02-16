@@ -17,7 +17,6 @@ public class WebConnection : MonoBehaviour
     void Start()
     {
         StartCoroutine(GetSensorData());
-        //StartCoroutine(PostToScoreboard("123", "DOG", true));
     }
 
 // Simple class that matches JSON
