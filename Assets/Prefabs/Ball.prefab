@@ -116,7 +116,7 @@ RectTransform:
   m_GameObject: {fileID: 1654361192903131208}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2448868288476785068}
@@ -161,13 +161,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f125a071463af4343bda2e09abe1ff5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxSpeed: 18
+  maxSpeed: 50
   accelerationCurve:
     serializedVersion: 2
     m_Curve:
     - serializedVersion: 3
-      time: 0.0005378723
-      value: 0.90530396
+      time: -0.009223631
+      value: 0.6022052
       inSlope: -0.04561383
       outSlope: -0.04561383
       tangentMode: 0
@@ -175,8 +175,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.043760948
     - serializedVersion: 3
-      time: 0.1926445
-      value: 1.166398
+      time: 0.70283735
+      value: 1.1639833
       inSlope: -0.04756484
       outSlope: -0.04756484
       tangentMode: 0
@@ -186,8 +186,8 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0.9857178
       value: 0.94818115
-      inSlope: -0.27515352
-      outSlope: -0.27515352
+      inSlope: -0.76287425
+      outSlope: -0.76287425
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

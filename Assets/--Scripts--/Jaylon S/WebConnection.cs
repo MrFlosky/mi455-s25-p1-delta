@@ -90,7 +90,7 @@ void ConvertToThreadSafeDict(Dictionary<int, DeviceData> localServerDict)
         if (isNew)
         {
             GameObject newBall = Instantiate(ballFab);
-            newBall.transform.position = new Vector3(0,10f,0);
+            newBall.transform.position = new Vector3(0,20f,0);
             newBall.GetComponent<Ball>().Init(pair.Key);
         }
     }
