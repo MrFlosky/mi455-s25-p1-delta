@@ -6,14 +6,13 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     TMP_Text usernameTxt;
-
     Rigidbody rigid;
+    // Transform of renderer.
+    Transform rendererTrans;
     // Key for accessing device dict
     int ID;
     // Motion data for this users ball
     WebConnection.DeviceData data;
-
-    [SerializeField] float power;
 
     /// <summary>
     /// /Set data upon this ball being initialized so we need only set username once.
@@ -30,6 +29,7 @@ public class Ball : MonoBehaviour
     {
         usernameTxt = transform.GetChild(0).GetComponent<TMP_Text>();
         rigid = GetComponent<Rigidbody>();
+        rendererTrans = transform.GetChild(1).transform;
         SetColor();
     }
 
@@ -50,6 +50,7 @@ public class Ball : MonoBehaviour
         if(WebConnection.unityServerDict.TryGetValue(ID, out _))
         {
             data = WebConnection.unityServerDict[ID];
+            UpdateBallRotation();
         }
         else
         {
@@ -57,22 +58,38 @@ public class Ball : MonoBehaviour
         }
     }
 
-    //[SerializeField] private float acceleration = 30f;
-    //[SerializeField] private float deceleration = 20f;
-    // Adjust to change the 3rd increment at which the ball begins moving.
-    //[SerializeField] private float tiltThreshold = 3f;
-    //[SerializeField] private float stoppingThreshold = 0.5f;
-    //[SerializeField] private float accelerationRate = 15f;
     
     // For MoveBallAnimCurve
     private Vector3 currentVelocity;
+    // Maximum tilt is 40 degrees
+    float maxTiltDegrees = 40f;
     // Max speed ball may reach
     [SerializeField] private float maxSpeed = 10f;
     // Constant mult for acceleration strength
-    [SerializeField] private float accelerationMultiplier = 15f;
-    /**Maps tilt steepness to acceleration mult, affects how sharply the ball changes speed. 
-    Linear down line = lesser multiplier as tilt becomes steeper. Thus, ball accelerates slower.
+    private float accelerationMultiplier = 10f;
+
+    /**
+    Connects tilt to acceleration mult, affects how sharply the ball changes speed. 
+    X-Axis is Input strength, Y-axis Acceleration Factor applied.
+
+    InputStrength (x-axis) scales with 3° increments: (3 / maxTilt).
+    tilt degree = input strength
+    3° = 0.075
+    6° = 0.15
+    9° = 0.225
+    12° = 0.3
+    15° = 0.375
+    18° = 0.45
+    21° = 0.525
+    24° = 0.6
+    27° = 0.675
+    30° = 0.75
+    33° = 0.825
+    36° = 0.9
+    39° = 0.975
+    40° = 1.0
     */
+    [Header("X-Axis: TiltStrength(0-1), Y-Axis: Acceleration Multiplier")]
     [SerializeField] private AnimationCurve accelerationCurve = new AnimationCurve();
 
 
@@ -85,74 +102,34 @@ public class Ball : MonoBehaviour
     /// <param name="upDownGyro">
     // Up/down gyro data
     // </param>
-    void MoveBallAnimCurve(float leftRightGyro, float upDownGyro)
-    {
-        // Gyro input into movement direction
-        Vector3 input = new Vector3(leftRightGyro, 0, -upDownGyro);
-        // Calculate desired velocity based on input, capped at max speed
-        Vector3 targetVelocity = Vector3.ClampMagnitude(input, maxSpeed) * power; // keep direction of ball, but if speed(magnitude) is too big clamp it
-
-        // Use animation curve to evaluate acceleration
-        float inputStrength = input.magnitude / (maxSpeed * power); // Calculate how much of max speed trying to reach 
-        float accelerationFactor = accelerationCurve.Evaluate(inputStrength);
+    void MoveBallAnimCurve(float leftRightGyro, float upDownGyro)     
+    {         
+        // Scale gyro input to be relative to max tilt degrees
+        Vector3 input = new Vector3(
+            leftRightGyro / maxTiltDegrees, 
+            0, 
+            -upDownGyro / maxTiltDegrees
+        );
         
-        float deltaTime = Time.deltaTime;
-        Vector3 acceleration = (targetVelocity - currentVelocity) * accelerationFactor * accelerationMultiplier;
-        currentVelocity += acceleration * deltaTime;
-
-            Debug.Log($"Speed: {currentVelocity.magnitude:F2} | " +
-              $"AccelFactor: {accelerationFactor:F2} | " +
-              $"Target Speed: {targetVelocity.magnitude:F2}");
-        rigid.velocity = currentVelocity;
+        // Calculate desired velocity based on input, capped at max speed
+        Vector3 targetVelocity = Vector3.ClampMagnitude(input, 1f) * maxSpeed; 
+        
+        float inputStrength = input.magnitude;
+        //inputStrength = Mathf.Clamp01(inputStrength); shouldnt need this if maxtiltdegrees is accurate to js on website
+        
+        float accelerationFactor = accelerationCurve.Evaluate(inputStrength);         
+        
+        float deltaTime = Time.deltaTime;         
+        Vector3 acceleration = (targetVelocity - currentVelocity) * accelerationFactor * accelerationMultiplier;         
+        currentVelocity += acceleration * deltaTime;          
+        
+        Debug.Log($"Input Strength: {inputStrength:F2} | Accel Factor: {accelerationFactor:F2} | Tilt: {leftRightGyro:F1}°, {upDownGyro:F1}° ");              
+        
+        rigid.velocity = currentVelocity;     
     }
 
-    // void MoveBallPeppy2(float leftRightGyro, float upDownGyro)
-    // {
-    //     Vector3 input = new Vector3(leftRightGyro, 0, -upDownGyro);
-        
-    //     Vector3 targetVelocity = Vector3.ClampMagnitude(input, maxSpeed) * power;
 
-    //     // Apply acceleration curve instead of linear movement
-    //     float deltaTime = Time.deltaTime;
-    //     Vector3 acceleration = (targetVelocity - currentVelocity) * accelerationRate;
-    //     currentVelocity += acceleration * deltaTime;
-
-    //     rigid.drag = input.magnitude > 0 ? 0.5f : 2f; // More drag when not moving
-    //     rigid.velocity = currentVelocity;
-    // }
-
-
-    // void MoveBallPeppy(float leftRightGyro, float upDownGyro)
-    // {
-    //     Vector3 input = new Vector3(leftRightGyro, 0, -upDownGyro);
-    //     Vector3 targetVelocity = Vector3.ClampMagnitude(input, maxSpeed) * power;
-    //     Debug.Log(currentVelocity);
-    //     float deltaTime = Time.deltaTime;
-    //     if (input.magnitude > 0)
-    //     {
-    //         currentVelocity = Vector3.MoveTowards(
-    //             currentVelocity,
-    //             targetVelocity,
-    //             acceleration * deltaTime
-    //         );
-    //     }
-    //     else
-    //     {
-    //         currentVelocity = Vector3.MoveTowards(
-    //             currentVelocity,
-    //             Vector3.zero,
-    //             deceleration * deltaTime
-    //         );
-            
-    //         if (currentVelocity.magnitude < stoppingThreshold)
-    //         {
-    //             currentVelocity = Vector3.zero;
-    //         }
-    //     }
-
-    //     rigid.velocity = currentVelocity;
-    // }
-
+    float power = 6;
     /// <summary>
     /// Used to move the ball.
     /// This one feels more like you're rolling a ball.
@@ -174,6 +151,16 @@ public class Ball : MonoBehaviour
         propertyBlock.SetFloat("_hueOffset", hueVal);
         propertyBlock.SetFloat("_saturationOffset", satVal);
         
-        this.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
+        rendererTrans.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
+    }
+
+    void UpdateBallRotation()
+    {
+        if (currentVelocity.magnitude > 0.1f)
+        {
+            Vector3 rotationAxis = Vector3.Cross(Vector3.up, currentVelocity.normalized);
+            float rotationSpeed = currentVelocity.magnitude * 360f;
+            rendererTrans.Rotate(rotationAxis, rotationSpeed * Time.deltaTime, Space.World);
+        }
     }
 }
