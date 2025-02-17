@@ -199,5 +199,10 @@ public class Ball : MonoBehaviour
         otherBall.currentVelocity += impulse / otherBall.mass;
     }
 
+    public Rigidbody GetRigid()
+    {
+        return rigid;
+    }
+
 
 }
