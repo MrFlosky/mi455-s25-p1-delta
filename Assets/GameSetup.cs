@@ -67,7 +67,7 @@ public class GameSetup : MonoBehaviour
             }
         }
 
-        if (survivorCount == 1)
+        if (survivorCount <= 1)
         {
             EndGame();
         }
