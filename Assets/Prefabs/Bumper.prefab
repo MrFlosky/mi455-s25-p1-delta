@@ -260,6 +260,7 @@ GameObject:
   - component: {fileID: 2512871318604918878}
   - component: {fileID: 5935866824852721888}
   - component: {fileID: 2830277476545022632}
+  - component: {fileID: 5730774670645452343}
   m_Layer: 0
   m_Name: Bumper
   m_TagString: Untagged
@@ -277,7 +278,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: -0.043577887, y: 0.043577887, z: 0.0019026523, w: 0.99809736}
   m_LocalPosition: {x: -26, y: 0.5, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_LocalScale: {x: 8, y: 8, z: 8}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6474790008809068204}
@@ -333,3 +334,17 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!114 &5730774670645452343
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5270201167205048800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3ac90e654cc086548924b40adbc84e54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseBounciness: 5
+  impactBounceFactor: 0.01

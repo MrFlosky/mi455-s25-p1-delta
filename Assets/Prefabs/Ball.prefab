@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentVelocity: {x: 0, y: 0, z: 0}
-  maxSpeed: 75
+  maxSpeed: 100
   accelerationCurve:
     serializedVersion: 2
     m_Curve:
