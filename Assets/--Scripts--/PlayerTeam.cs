@@ -12,8 +12,7 @@ public class PlayerTeam : MonoBehaviour
     }
     public Team team = Team.Survivor;
     public static event Action OnTeamUpdated;
-
-
+    
     private void OnCollisionEnter(Collision other)
     {
         if (team != Team.Survivor) return;
@@ -26,6 +25,9 @@ public class PlayerTeam : MonoBehaviour
             team = Team.Infected;
 
             OnTeamUpdated?.Invoke();
+            
+            GameSetup.Instance.CheckForWinner();
         }
     }
+    
 }

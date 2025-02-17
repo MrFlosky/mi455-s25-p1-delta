@@ -10,6 +10,9 @@ public class TeamSelector : MonoBehaviour
     [SerializeField] private TimerSystem timer;
     
     public static TeamSelector Instance { get; private set; }
+    
+    [SerializeField] private Transform spawnPointsParent;
+    private List<Transform> availableSpawns = new List<Transform>();
 
     private void Awake()
     {
@@ -21,6 +24,11 @@ public class TeamSelector : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject); // Keep across scenes
+        
+        foreach (Transform spawn in spawnPointsParent)
+        {
+            availableSpawns.Add(spawn);
+        }
     }
     
     public void CreateTeams()
@@ -38,11 +46,39 @@ public class TeamSelector : MonoBehaviour
         // get the randomly chosen initial id
         var initialZombieID = keys[Random.Next(keys.Count)];
 
-        GameObject intitialZombieObj = WebConnection.playerObjDict[initialZombieID];
-        intitialZombieObj.GetComponent<PlayerTeam>().team = PlayerTeam.Team.Infected;
+        var initialZombieObj = WebConnection.playerObjDict[initialZombieID];
+        initialZombieObj.GetComponent<PlayerTeam>().team = PlayerTeam.Team.Infected;
         
-        print("initialZombieID: " + initialZombieID);
-
-        timer.SetTimer(1, 1, 1, "Run", GameSetup.Instance.EndGame);
+        MovePlayersToSpawns(WebConnection.playerObjDict);
+        
+        timer.timerText.text = "Run";
     }
+
+    public void MovePlayersToSpawns(Dictionary<int, GameObject> players)
+    {
+        if (availableSpawns.Count < players.Count)
+        {
+            Debug.LogError("not enough spawn points");
+            return;
+        }
+        
+        ShuffleList(availableSpawns);
+
+        int index = 0;
+        foreach (var player in players.Values)
+        {
+            player.transform.position = availableSpawns[index].position;
+            index++;
+        }
+    }
+
+    private void ShuffleList<T>(List<T> list)
+    {
+        for (int i = list.Count - 1; i > 0; i--)
+        {
+            int randomIndex = Random.Next(i + 1);
+            (list[i], list[randomIndex]) = (list[randomIndex], list[i]);
+        }
+    }
+    
 }

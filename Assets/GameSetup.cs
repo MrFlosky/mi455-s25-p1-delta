@@ -11,6 +11,8 @@ public class GameSetup : MonoBehaviour
     [SerializeField] private int downtimeMinutes = 0;
     
     public static GameSetup Instance { get; private set; }
+    
+    private PlayerTeam[] players;
 
     private void Awake()
     {
@@ -28,9 +30,46 @@ public class GameSetup : MonoBehaviour
     {
         timer.SetTimer(downtimeSeconds, downtimeMinutes, 0, "Join Room", TeamSelector.Instance.CreateTeams);
     }
-    
-    public void EndGame()
+
+    private void EndGame()
     {
         timer.SetTimer(downtimeSeconds, downtimeMinutes, 0, "Game Over", StartGame);
+        
+        if (players.Length <= 0) return;
+        // reset the players
+        foreach (var player in players)
+        {
+            player.team = PlayerTeam.Team.Survivor;
+        }
+    }
+
+    private void UpdatePlayerList()
+    {
+        players = FindObjectsOfType<PlayerTeam>();
+    }
+
+    public PlayerTeam[] GetPlayers()
+    {
+        return players;
+    }
+    
+    public void CheckForWinner()
+    {
+        UpdatePlayerList();
+        
+        var survivorCount = 0;
+
+        foreach (var player in players)
+        {
+            if (player.team == PlayerTeam.Team.Survivor)
+            {
+                survivorCount++;
+            }
+        }
+
+        if (survivorCount == 1)
+        {
+            EndGame();
+        }
     }
 }
