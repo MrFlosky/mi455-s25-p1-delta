@@ -165,7 +165,7 @@ MonoBehaviour:
   usernameTxt: {fileID: 0}
   currentSeconds: 0
   currentVelocity: {x: 0, y: 0, z: 0}
-  maxSpeed: 100
+  maxSpeed: 125
   accelerationCurve:
     serializedVersion: 2
     m_Curve:

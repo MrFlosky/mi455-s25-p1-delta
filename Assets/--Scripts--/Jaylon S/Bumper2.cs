@@ -7,6 +7,8 @@ public class Bumper2 : MonoBehaviour
     [SerializeField] private float baseBounciness = 5f;
     [Header("How much extra bounce to add based on impact speed MULT")]
     [SerializeField] private float impactBounceFactor = 0.1f;
+    public Animator animator;
+    public AnimationClip tween;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -28,6 +30,7 @@ public class Bumper2 : MonoBehaviour
             // Apply impulse to ball
             Vector3 impulse = normal * impulseStrength;
             ball.currentVelocity += impulse;
+            animator.Play(tween.name);
         }
     }
 }
