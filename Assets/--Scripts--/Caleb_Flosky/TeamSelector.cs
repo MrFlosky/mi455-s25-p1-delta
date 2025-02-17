@@ -48,6 +48,7 @@ public class TeamSelector : MonoBehaviour
 
         var initialZombieObj = WebConnection.playerObjDict[initialZombieID];
         initialZombieObj.GetComponent<PlayerTeam>().team = PlayerTeam.Team.Infected;
+        initialZombieObj.GetComponent<Ball>().SetColor(true);
         
         MovePlayersToSpawns(WebConnection.playerObjDict);
         

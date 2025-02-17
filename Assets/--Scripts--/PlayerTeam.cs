@@ -23,6 +23,8 @@ public class PlayerTeam : MonoBehaviour
         if (attacker.GetComponent<PlayerTeam>().team == Team.Infected)
         {
             team = Team.Infected;
+            Ball b = this.gameObject.GetComponent<Ball>();
+            b.SetColor(true);
 
             OnTeamUpdated?.Invoke();
             
