@@ -5,12 +5,13 @@ using UnityEngine;
 
 public class Ball : MonoBehaviour
 {
-    TMP_Text usernameTxt;
+    public TMP_Text usernameTxt;
     Rigidbody rigid;
     // Transform of renderer.
     Transform rendererTrans;
     // Key for accessing device dict
     int ID;
+    public float currentSeconds;
     // Motion data for this users ball
     WebConnection.DeviceData data;
 
@@ -32,7 +33,6 @@ public class Ball : MonoBehaviour
         rendererTrans = transform.GetChild(1).transform;
         // Register this Ball instance with the GameManager when it is spawned
 
-        //GameManager.instance.RegisterBall(this);
         SetColor();
     }
 
@@ -202,6 +202,21 @@ public class Ball : MonoBehaviour
     public Rigidbody GetRigid()
     {
         return rigid;
+    }
+
+    private void OnDestroy()
+    {
+        // Unsubscribe to prevent memory leaks
+        PlayerTeam.OnTeamUpdated -= UpdateTeamInfo;
+    }
+
+    private void UpdateTeamInfo()
+    {
+        // Update the ball based on the new team info
+        //currentTeam = FindObjectOfType<PlayerTeam>().GetTeamName();
+        currentSeconds = TimerSystem.instance.GetCurrentTime();
+        GameManager.instance.RegisterBall(this);
+        //Debug.Log($"Ball updated to new team: {currentTeam}");
     }
 
 

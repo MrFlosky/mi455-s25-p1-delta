@@ -6,6 +6,8 @@ using System;
 
 public class TimerSystem : MonoBehaviour
 {
+    public static TimerSystem instance = null;
+
     public TextMeshProUGUI timerText;
 
     [Header("Time Values")]
@@ -41,6 +43,14 @@ public class TimerSystem : MonoBehaviour
         currentSeconds = timerDefault;
         timerText.color = startColor;
         */
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void SetTimer(int seconds, int minutes, int hours, string timerType, Action functionAtEnd = null)
@@ -148,5 +158,10 @@ public class TimerSystem : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
         isFlashing = false;
+    }
+
+    public float GetCurrentTime()
+    {
+        return currentSeconds;
     }
 }

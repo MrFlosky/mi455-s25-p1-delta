@@ -22,12 +22,21 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public static void UpdateUIElements()
+    {
+        if (instance != null && UIManager.instance != null)
+        {
+            UIManager.instance.UpdateUI();
+        }
+    }
+
     public void RegisterBall(Ball newBall)
     {
         if (!balls.Contains(newBall))
         {
             balls.Add(newBall);
         }
+        UpdateUIElements();
     }
 
     public void StartGame()

@@ -11,6 +11,7 @@ public class PlayerTeam : MonoBehaviour
         Infected
     }
     public Team team = Team.Survivor;
+    public static event Action OnTeamUpdated;
 
 
     private void OnCollisionEnter(Collision other)
@@ -23,6 +24,8 @@ public class PlayerTeam : MonoBehaviour
         if (attacker.GetComponent<PlayerTeam>().team == Team.Infected)
         {
             team = Team.Infected;
+
+            OnTeamUpdated?.Invoke();
         }
     }
 }
