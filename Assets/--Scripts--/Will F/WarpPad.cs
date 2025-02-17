@@ -5,7 +5,7 @@ using UnityEngine;
 
 
 /// <summary>
-/// Pretty simple. Checks if we are warping a marble and if we are moves it to the teleport spot
+/// Pretty simple. Checks if we are warping a marble/ball and if we are moves it to the teleport spot
 /// </summary>
 public class WarpPad : MonoBehaviour
 {
@@ -18,7 +18,8 @@ public class WarpPad : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         Marble marble = other.GetComponent<Marble>();
-        if (marble = null) return;
+        Ball ball = other.GetComponent<Ball>();
+        if (marble == null && ball == null) return;
         if (!coolDown)
         {
             GameObject go = other.gameObject;

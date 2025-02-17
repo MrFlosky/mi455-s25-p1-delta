@@ -63,7 +63,7 @@ public class Ball : MonoBehaviour
 
     
     // For MoveBallAnimCurve
-    private Vector3 currentVelocity;
+    public Vector3 currentVelocity;
     // Maximum tilt is 40 degrees
     float maxTiltDegrees = 40f;
     // Max speed ball may reach
