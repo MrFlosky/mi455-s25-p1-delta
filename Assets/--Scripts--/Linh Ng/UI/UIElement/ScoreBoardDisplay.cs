@@ -10,7 +10,7 @@ public class ScoreboardDisplay : UIelement
 {
     [Header("References")]
     [Tooltip("The text to use when displaying the score")]
-    public Text displayText = null;
+    public TextMeshProUGUI displayText = null;
 
     // Start is called before the first frame update
     public void DisplayScore()
