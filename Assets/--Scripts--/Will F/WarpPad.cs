@@ -12,6 +12,8 @@ public class WarpPad : MonoBehaviour
     [Header("Inscribed")]
     public GameObject warpPadDestination;
 
+    public float refreshTime = 0.1f;
+    
     [Header("Dynamic")] 
     private bool coolDown;
 
@@ -24,9 +26,10 @@ public class WarpPad : MonoBehaviour
         {
             GameObject go = other.gameObject;
             WarpPad w = warpPadDestination.GetComponent<WarpPad>();
-            go.transform.position = warpPadDestination.transform.position;
+            Vector3 destination = new Vector3(warpPadDestination.transform.position.x, go.transform.position.y, warpPadDestination.transform.position.z);
+            go.transform.position = destination;
             w.coolDown = true;
-            w.Invoke("Refresh", 1 );
+            w.Invoke("Refresh", refreshTime );
             
         }
         

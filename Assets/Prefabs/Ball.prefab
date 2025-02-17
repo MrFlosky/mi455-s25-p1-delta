@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: -9201574173347659974}
   m_Layer: 0
   m_Name: Ball
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -162,6 +162,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f125a071463af4343bda2e09abe1ff5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  usernameTxt: {fileID: 0}
+  currentSeconds: 0
   currentVelocity: {x: 0, y: 0, z: 0}
   maxSpeed: 100
   accelerationCurve:

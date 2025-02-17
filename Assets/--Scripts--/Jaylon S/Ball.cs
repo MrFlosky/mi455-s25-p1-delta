@@ -33,7 +33,7 @@ public class Ball : MonoBehaviour
         rendererTrans = transform.GetChild(1).transform;
         // Register this Ball instance with the GameManager when it is spawned
 
-        SetColor();
+        SetColor(false);
     }
 
     /// <summary>
@@ -143,18 +143,35 @@ public class Ball : MonoBehaviour
         rigid.AddForce(new Vector3(0, 0, -data.fb_tilt/ 10 *power));
     }
 
-    public void SetColor()
+    public void SetColor(bool isInfected)
     {
-        // We will need to make sure only this instances color is being offset
-        MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+        if (!isInfected)
+        {
+            // We will need to make sure only this instances color is being offset
+            MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
         
-        float hueVal = Random.Range(-1.0f, 1.0f);
-        float satVal = Random.Range(0f, 10.0f);
+            float hueVal = Random.Range(-1.0f, 1.0f);
+            float satVal = Random.Range(0f, 10.0f);
         
-        propertyBlock.SetFloat("_hueOffset", hueVal);
-        propertyBlock.SetFloat("_saturationOffset", satVal);
+            propertyBlock.SetFloat("_hueOffset", hueVal);
+            propertyBlock.SetFloat("_saturationOffset", satVal);
         
-        rendererTrans.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);
+            rendererTrans.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock);  
+        }
+        // Setting color for infected
+        else
+        {
+            MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
+        
+            float hueVal = 0.69f;
+            float satVal = 115f;
+        
+            propertyBlock.SetFloat("_hueOffset", hueVal);
+            propertyBlock.SetFloat("_saturationOffset", satVal);
+        
+            rendererTrans.GetComponent<MeshRenderer>().SetPropertyBlock(propertyBlock); 
+        }
+        
     }
 
     void UpdateBallRotation()
