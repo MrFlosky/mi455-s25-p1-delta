@@ -164,7 +164,7 @@ public class Ball : MonoBehaviour
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
         
             float hueVal = 0.69f;
-            float satVal = 115f;
+            float satVal = 30f;
         
             propertyBlock.SetFloat("_hueOffset", hueVal);
             propertyBlock.SetFloat("_saturationOffset", satVal);
