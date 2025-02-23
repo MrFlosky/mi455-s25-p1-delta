@@ -164,7 +164,7 @@ public class Ball : MonoBehaviour
             MaterialPropertyBlock propertyBlock = new MaterialPropertyBlock();
         
             float hueVal = 0.69f;
-            float satVal = 115f;
+            float satVal = 30f;
         
             propertyBlock.SetFloat("_hueOffset", hueVal);
             propertyBlock.SetFloat("_saturationOffset", satVal);
@@ -194,24 +194,31 @@ public class Ball : MonoBehaviour
         }
     }
 
-    [Header("Physics Properties")]
+    [Header("Ball-ball collision variables")]
     [SerializeField] private float mass = 1f;
-    [SerializeField] private float bounciness = 0.8f; // 0 = no bounce, 1 = perfect bounce
+    [SerializeField] private float bounce = 3f; // 0 = no bounce, 1 = perfect bounce
+
+    // Detection: Continious Dynamic seems to have fixed weird collision bug.
+    // For detection mode info:
+    // https://blog.terresquall.com/2019/12/collision-detection-modes-in-unitys-rigidbody-component
     public void BallCollision(Ball otherBall)
     {
-        // Calculate collision normal (direction of this ball to the other)
+        // Calculate collision normal (direction of this ball to the other). normalized to only include direction
         Vector3 normal = (otherBall.transform.position - transform.position).normalized;
 
         // Calculate relative velocity
         Vector3 relativeVelocity = otherBall.currentVelocity - currentVelocity;
 
-        // Calculate impulse
-        // dot product: how much does relative velocity project onto the normal, i.e. how fast moving towards eachother?
-        float impulseStrength = -(bounciness) * Vector3.Dot(relativeVelocity, normal); 
-        impulseStrength /= (1 / mass + 1 / otherBall.mass);
+        // How much does relative velocity project onto the normal, i.e. how fast this ball moving towards the other
+        // PROJdirVel = (Vel * dir / |dir|) * dir 
+        // where dir is normalized (length of 1)
+        // |dir| = 1 since magnitude || means length of vector 
+        // (vel * dir) * dir
+        Vector3 projectedVel = (Vector3.Dot(relativeVelocity, normal)) * normal;
 
-        // Apply impulse to both balls
-        Vector3 impulse = normal * impulseStrength;
+        // impulse equation: j = -(1 + e)(v1 - v2) / (1/m1 + 1/m2)
+        Vector3 impulse = -(1 + bounce) * projectedVel / (1/mass + 1/otherBall.mass);
+        // Apply impulse
         currentVelocity -= impulse / mass;
         otherBall.currentVelocity += impulse / otherBall.mass;
     }
