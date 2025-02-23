@@ -16,14 +16,17 @@ public class ScoreboardDisplay : UIelement
     public void DisplayScore()
     {
         string sortedListText = "Survived Time:\n";
-        foreach (Ball ball in GameManager.instance.balls)
+        if (GameManager.instance.balls != null)
         {
-            sortedListText += $"Player: {ball.usernameTxt.text}, Survived Time: {TimeSpan.FromSeconds(ball.currentSeconds).ToString(@"hh\:mm\:ss\:fff")}\n";
-        }
+            foreach (Ball ball in GameManager.instance.balls)
+            {
+                sortedListText += $"Player: {ball.usernameTxt.text}, Survived Time: {TimeSpan.FromSeconds(ball.currentSeconds).ToString(@"hh\:mm\:ss\:fff")}\n";
+            }
 
-        if (displayText != null)
-        {
-            displayText.text = sortedListText;  // Update the UI Text
+            if (displayText != null)
+            {
+                displayText.text = sortedListText;  // Update the UI Text
+            }
         }
     }
 
