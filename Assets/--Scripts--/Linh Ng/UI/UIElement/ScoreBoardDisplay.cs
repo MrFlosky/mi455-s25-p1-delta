@@ -16,7 +16,7 @@ public class ScoreboardDisplay : UIelement
     public void DisplayScore()
     {
         string sortedListText = "Survived Time:\n";
-        if (GameManager.instance.balls != null)
+        if (GameManager.instance != null)
         {
             foreach (Ball ball in GameManager.instance.balls)
             {
