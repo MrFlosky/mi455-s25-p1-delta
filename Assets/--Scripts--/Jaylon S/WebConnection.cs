@@ -97,6 +97,8 @@ void ConvertToThreadSafeDict(Dictionary<int, DeviceData> localServerDict)
             GameObject newBall = Instantiate(ballFab);
             newBall.transform.position = new Vector3(0,20f,0);
             newBall.GetComponent<Ball>().Init(pair.Key);
+            
+            newBall.GetComponent<PlayerTeam>().SetTeam(GameSetup.Instance.GameStarted);
 
             playerObjDict[pair.Key] = newBall;
             //Debug.Log(playerObjDict.Keys);
