@@ -38,7 +38,7 @@ IEnumerator GetSensorData()
 {
     while (true)
     {
-        UnityWebRequest request = UnityWebRequest.Get(nonLocalUrl);
+        UnityWebRequest request = UnityWebRequest.Get(localUrl);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
