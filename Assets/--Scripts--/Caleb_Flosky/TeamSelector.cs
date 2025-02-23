@@ -37,7 +37,7 @@ public class TeamSelector : MonoBehaviour
         if (WebConnection.unityServerDict.IsEmpty)
         {
             Debug.LogError("No devices in the dictionary.");
-            timer.SetTimer(10, 0, 0, "Join Room", CreateTeams);
+            timer.SetTimer(1, 0, 0, "No player joined, restarting setup", GameSetup.Instance.StartGame);
         }
         
         // make new list of all the keys

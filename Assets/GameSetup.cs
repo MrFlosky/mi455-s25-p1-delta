@@ -28,7 +28,12 @@ public class GameSetup : MonoBehaviour
 
     public void StartGame()
     {
-        timer.SetTimer(downtimeSeconds, downtimeMinutes, 0, "Join Room", TeamSelector.Instance.CreateTeams);
+        timer.SetTimer(downtimeSeconds, downtimeMinutes, 0, "Join Room", StartingGame);
+    }
+    
+    public void StartingGame()
+    {
+        timer.SetTimer(10, 0, 0, "Game Starting", TeamSelector.Instance.CreateTeams);
     }
 
     private void EndGame()
