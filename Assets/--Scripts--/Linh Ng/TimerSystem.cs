@@ -27,6 +27,7 @@ public class TimerSystem : MonoBehaviour
     private int timerDefault;
     //public PlayerController playerController;
 
+    private bool clockStarted = false;
     private bool gameEnded = false;
     private bool isFlashing = false;
     private Coroutine flashCoroutine;
@@ -55,6 +56,7 @@ public class TimerSystem : MonoBehaviour
 
     public void SetTimer(int seconds, int minutes, int hours, string timerType, Action functionAtEnd = null)
     {
+        clockStarted = true;
         // set the timer
         timerDefault = 0;
         timerDefault += (seconds + (minutes * 60) + (hours * 60 * 60));
@@ -69,12 +71,14 @@ public class TimerSystem : MonoBehaviour
         else
             this.timerType = timerType + ": ";
         
-        this.functionAtEnd = functionAtEnd;
+        this.functionAtEnd = functionAtEnd ?? (() => Debug.Log("No function assigned!"));
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (!clockStarted) return;
+        
         if (!isFlashing)
         {
             flashCoroutine = StartCoroutine(FlashText());
@@ -118,10 +122,15 @@ public class TimerSystem : MonoBehaviour
         StopFlashing();  // Stop flashing when time is up
         timerText.color = startColor;  // Reset to default color
 
+        clockStarted = false;
+        
         if (functionAtEnd == null) return;
         
+        var currFunction = functionAtEnd;
+        
         functionAtEnd?.Invoke();
-        functionAtEnd = null;
+        
+        if (functionAtEnd == currFunction) functionAtEnd = null;
     }
 
     private void EndGame()

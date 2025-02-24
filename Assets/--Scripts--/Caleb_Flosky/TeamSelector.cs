@@ -64,10 +64,16 @@ public class TeamSelector : MonoBehaviour
         // Move players to random spawn positions
         MovePlayersToSpawns(WebConnection.playerObjDict);
         
-        GameSetup.Instance.GameStarted = true;
+        GameSetup.Instance.FreezePlayers(true);
+        
+        timer.SetTimer(5, 0, 0, "Get Ready", LetPlayersMove);
+    }
 
-        // Update timer text to indicate the game is running
-        timer.timerText.text = "Run";
+    private void LetPlayersMove()
+    {
+        Debug.Log("Bop");
+        GameSetup.Instance.FreezePlayers(false);
+        timer.timerText.text = "Go!";
     }
 
     // Moves players to random spawn locations
@@ -87,7 +93,12 @@ public class TeamSelector : MonoBehaviour
         int index = 0;
         foreach (var player in players.Values)
         {
+            var trail = player.GetComponent<TrailRenderer>();
+            trail.enabled = false;
+            
             player.transform.position = availableSpawns[index].position;
+            
+            trail.enabled = true;
             index++;
         }
     }
