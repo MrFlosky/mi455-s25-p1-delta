@@ -38,7 +38,7 @@ IEnumerator GetSensorData()
 {
     while (true)
     {
-        UnityWebRequest request = UnityWebRequest.Get(localUrl);
+        UnityWebRequest request = UnityWebRequest.Get(nonLocalUrl);
         yield return request.SendWebRequest();
 
         if (request.result == UnityWebRequest.Result.Success)
@@ -97,8 +97,9 @@ void ConvertToThreadSafeDict(Dictionary<int, DeviceData> localServerDict)
             GameObject newBall = Instantiate(ballFab);
             newBall.transform.position = new Vector3(0,20f,0);
             newBall.GetComponent<Ball>().Init(pair.Key);
-            
-            newBall.GetComponent<PlayerTeam>().SetTeam(GameSetup.Instance.GameStarted);
+
+            var isInfected = GameSetup.Instance.GameStarted;
+            newBall.GetComponent<PlayerTeam>().SetTeam(isInfected);
 
             playerObjDict[pair.Key] = newBall;
             //Debug.Log(playerObjDict.Keys);

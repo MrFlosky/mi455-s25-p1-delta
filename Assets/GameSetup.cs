@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,6 +38,7 @@ public class GameSetup : MonoBehaviour
     // Starts the game with a timer countdown
     public void StartGame()
     {
+        Debug.Log("start game");
         timer.SetTimer(downtimeSeconds, downtimeMinutes, 0, "Join Room", StartingGame);
     }
 
@@ -44,20 +46,15 @@ public class GameSetup : MonoBehaviour
     public void StartingGame()
     {
         UpdatePlayerList();
-        FreezePlayers(true); // Freeze players
 
-        timer.SetTimer(5, 0, 0, "Get Ready", () =>
-        {
-            FreezePlayers(false); // Unfreeze players
-            TeamSelector.Instance.CreateTeams(); // Start the game
-        });
+        TeamSelector.Instance.CreateTeams();
     }
 
 
     // Ends the current game session and resets the game state
     private void EndGame(string winner = "")
     {
-        timer.SetTimer(downtimeSeconds, downtimeMinutes, 0, "Game Over\n" + winner + " Wins!", StartGame);
+        timer.SetTimer(downtimeSeconds, downtimeMinutes, 0, "Game Over\n" + winner + " Wins!\nRestarting", StartGame);
         
         // Ensure there are players before resetting teams
         if (players.Length <= 0) return;
@@ -103,10 +100,14 @@ public class GameSetup : MonoBehaviour
         }
 
         // If one or zero survivors remain, end the game
-        if (survivorCount <= 1)
+        if (survivorCount == 1)
         {
             var survivorName = survivors[0].GetComponent<Ball>().usernameTxt.text;
             EndGame(survivorName);
+        }
+        else if (survivorCount <= 0)
+        {
+            EndGame("No One");
         }
     }
     
@@ -114,6 +115,7 @@ public class GameSetup : MonoBehaviour
     {
         foreach (var player in players)
         {
+            Debug.Log("freeze players: " + freeze);
             // get each player's has a Rigidbody
             var rb = player.GetComponent<Rigidbody>(); 
             if (rb == null) continue;
@@ -127,10 +129,18 @@ public class GameSetup : MonoBehaviour
             else
             {
                 // unfreeze
+                Debug.Log("Unfreeze");
                 rb.constraints = RigidbodyConstraints.FreezePositionY | RigidbodyConstraints.FreezeRotation;
+                GameStarted = true;
             }
         }
     }
-    
+
+    private void FixedUpdate()
+    {
+        if (!GameStarted) return;
+        CheckForWinner();
+    }
+
     public bool GameStarted { get; set; }
 }

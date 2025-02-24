@@ -2121,6 +2121,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Setup
       objectReference: {fileID: 0}
+    - target: {fileID: 3351143974154386668, guid: f85532f58bbab6d46a1750fe6db5d516, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 3351143974154386668, guid: f85532f58bbab6d46a1750fe6db5d516, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -100
+      objectReference: {fileID: 0}
+    - target: {fileID: 3636510320258645664, guid: f85532f58bbab6d46a1750fe6db5d516, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 3636510320258645664, guid: f85532f58bbab6d46a1750fe6db5d516, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 256
+      objectReference: {fileID: 0}
     - target: {fileID: 4991146704845276433, guid: f85532f58bbab6d46a1750fe6db5d516, type: 3}
       propertyPath: spawnPointsParent
       value: 
@@ -2129,6 +2145,10 @@ PrefabInstance:
       propertyPath: txt
       value: 
       objectReference: {fileID: 897385821}
+    - target: {fileID: 5726401612486391568, guid: f85532f58bbab6d46a1750fe6db5d516, type: 3}
+      propertyPath: m_text
+      value: Start Game
+      objectReference: {fileID: 0}
     - target: {fileID: 8087005509242936420, guid: f85532f58bbab6d46a1750fe6db5d516, type: 3}
       propertyPath: m_LocalPosition.x
       value: -535.34955
