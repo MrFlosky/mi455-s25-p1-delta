@@ -14,9 +14,31 @@ public class WebConnection : MonoBehaviour
     public TMP_Text txt;
     public GameObject ballFab;
 
+    private string currentUrl = "";
+    private Coroutine currentConnection;
+    [SerializeField] TMP_Text connectionText;
+    
     void Start()
     {
-        StartCoroutine(GetSensorData());
+        SwitchConnection();
+    }
+
+    public void SwitchConnection()
+    {
+        if (currentUrl == localUrl)
+        {
+            connectionText.text = "Non Local";
+            currentUrl = nonLocalUrl;
+        }
+        else
+        {
+            connectionText.text = "Local";
+            currentUrl = localUrl;
+        }
+        
+        if (currentConnection != null)
+            StopCoroutine(currentConnection);
+        currentConnection = StartCoroutine(GetSensorData());
     }
 
 // Simple class that matches JSON
