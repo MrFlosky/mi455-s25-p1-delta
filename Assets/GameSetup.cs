@@ -52,7 +52,7 @@ public class GameSetup : MonoBehaviour
 
 
     // Ends the current game session and resets the game state
-    private void EndGame(string winner = "")
+    public void EndGame(string winner = "")
     {
         timer.SetTimer(downtimeSeconds, downtimeMinutes, 0, "Game Over\n" + winner + " Wins!\nRestarting", StartGame);
         

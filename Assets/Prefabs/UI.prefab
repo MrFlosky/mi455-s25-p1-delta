@@ -551,7 +551,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5335996502718337776}
-  - component: {fileID: 3283542441737088618}
+  - component: {fileID: 2950231278347439690}
   m_Layer: 5
   m_Name: Timer
   m_TagString: Untagged
@@ -580,7 +580,7 @@ RectTransform:
   m_AnchoredPosition: {x: -636, y: 413}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &3283542441737088618
+--- !u!114 &2950231278347439690
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -589,12 +589,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 7723869027311040387}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 995d75e5afe2af54a98afc00b1289f24, type: 3}
+  m_Script: {fileID: 11500000, guid: b50740d68395fcb4db7f25940a527597, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   timerText: {fileID: 1131563664995085204}
   seconds: 0
-  minutes: 5
+  minutes: 0
   hours: 0
   startColor: {r: 1, g: 1, b: 1, a: 1}
   flashColor: {r: 1, g: 0, b: 0, a: 1}
