@@ -22,7 +22,10 @@ public class Ball : MonoBehaviour
     public void Init(int id)
     {
         ID = id;
-        data = WebConnection.unityServerDict[ID];
+        if(WebConnection.unityServerDict.TryGetValue(ID, out var serverData))
+        {
+            data = serverData;
+        }
         usernameTxt.text = data.username; 
     }
 

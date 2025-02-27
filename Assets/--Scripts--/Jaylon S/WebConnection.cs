@@ -3,174 +3,156 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Networking;
+using System.Net.WebSockets;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Text;
 
 public class WebConnection : MonoBehaviour 
 {
-    private string nonLocalUrl = "https://calm-concise-longhorn.ngrok.app/sensorData";
-    private string localUrl = "http://localhost:8080/sensorData";
-    public TMP_Text txt;
+    private ClientWebSocket webSocket;
+    // Use when you are hosting the game server locally.
+    private string webSocketLocalUrl = "ws://localhost:8080/ws/unity";
+    // Use when you are NOT hosting the game server, i.e. being hosted on fly.
+    private string webSocketNonLocalUrl = "wss://web-service-gin-upgrade.fly.dev/ws/unity";
+    private CancellationTokenSource cancellationToken;
     public GameObject ballFab;
 
-    private string currentUrl = "";
-    private Coroutine currentConnection;
-    [SerializeField] TMP_Text connectionText;
-    
-    void Start()
+    // Simple class that matches JSON
+    public class DeviceData
     {
-        SwitchConnection();
+        public string username;
+        public float fb_tilt;    
+        public float lr_tilt;
+        public int last_update;
     }
 
-    public void SwitchConnection()
-    {
-        if (currentUrl == localUrl)
-        {
-            connectionText.text = "Non Local";
-            currentUrl = nonLocalUrl;
-        }
-        else
-        {
-            connectionText.text = "Local";
-            currentUrl = localUrl;
-        }
-        
-        if (currentConnection != null)
-            StopCoroutine(currentConnection);
-        currentConnection = StartCoroutine(GetSensorData());
-    }
+    // Holds all server data
+    public static ConcurrentDictionary<int, DeviceData> unityServerDict = new ConcurrentDictionary<int, DeviceData>();
 
-// Simple class that matches JSON
-public class DeviceData
-{
-    public string username;
-    public float fb_tilt;    
-    public float lr_tilt;
-}
-
-// Holds all server data
-public static ConcurrentDictionary<int, DeviceData> unityServerDict = new ConcurrentDictionary<int, DeviceData>();
-
-// Connects ID to player's marble gameobject. Seperate because concurrent dict is constantly being updated with new data.
-public static Dictionary<int, GameObject> playerObjDict = new Dictionary<int, GameObject>();
+    // Connects ID to player's marble gameobject. Separate because concurrent dict is constantly being updated with new data.
+    public static Dictionary<int, GameObject> playerObjDict = new Dictionary<int, GameObject>();
  
-// Gets all user data from server as dictionary, converts to unity dictionary.
-IEnumerator GetSensorData() 
-{
-    while (true)
+    async void Start()
     {
-        UnityWebRequest request = UnityWebRequest.Get(nonLocalUrl);
-        yield return request.SendWebRequest();
-
-        if (request.result == UnityWebRequest.Result.Success)
+        webSocket = new ClientWebSocket();
+        cancellationToken = new CancellationTokenSource();
+        try 
         {
-            string rawResponse = request.downloadHandler.text;
-            try
-            {
-                DeviceData data = JsonUtility.FromJson<DeviceData>(rawResponse);
-                // Convert json dictionary to C#
-                Dictionary<int, DeviceData> dataMap = JsonConvert.DeserializeObject<Dictionary<int, DeviceData>>(rawResponse);
-                ConvertToThreadSafeDict(dataMap);
-                //txt.text = $"Rotation: {data.rotation}\nFront/Back Tilt: {data.fb_tilt}\nLeft/Right Tilt: {data.lr_tilt}";
-            }
-            catch (System.Exception e)
-            {
-                Debug.LogError($"Error parsing JSON: {e.Message}");
-            }
+            await webSocket.ConnectAsync(new System.Uri(webSocketNonLocalUrl), cancellationToken.Token);
+            Debug.Log("Connected to WebSocket server!");
+            ReceiveServerData();
         }
-        else
+        catch (System.Exception e)
         {
-            Debug.Log("FAIL");
+            Debug.LogError($"WebSocket connection error: {e.Message}");
         }
-
-        yield return new WaitForSeconds(0.01f);
     }
+
+private async void ReceiveServerData()
+{
+    // Estimate to allow for around ~40 users (4KB) worth of JSON dictionary
+    byte[] buffer = new byte[4096]; 
+
+    // Continously checks if web socket open, and listens for messages.
+    while (webSocket.State == WebSocketState.Open)
+    {
+        try
+        {
+            WebSocketReceiveResult result = await webSocket.ReceiveAsync(
+                buffer,
+                cancellationToken.Token);
+
+            if (result.MessageType == WebSocketMessageType.Text)
+            {
+                string message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+                try 
+                {
+                    Debug.Log($"Received JSON: {message}");
+                    // Deserialize the JSON message where keys are strings
+                    Dictionary<int, DeviceData> tempDataMap = JsonConvert.DeserializeObject<Dictionary<int, DeviceData>>(message);
+
+                    Debug.Log("DESERIALIZE SUCCESS" + message);
+                    // Convert to thread-safe dict and update Unity data
+                    ConvertToThreadSafeDict(tempDataMap);
+                }
+                catch (System.Exception e)
+                {
+                    Debug.LogError($"Error parsing JSON: {e.Message}");
+                    Debug.LogError($"Message received: {message}");
+                }
+            }
+            else if (result.MessageType == WebSocketMessageType.Close)
+            {
+                Debug.Log("WebSocket closed by server");
+                break;
+            }
+
+            // 3ms delay between requests
+            await Task.Delay(3, cancellationToken.Token); 
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError($"Error receiving message: {e.Message}");
+            break;
+        }
+
+    }
+
 }
 
-void ConvertToThreadSafeDict(Dictionary<int, DeviceData> localServerDict)
-{
-    // Get keys in Unity dict that are missing in the updated 
-    // server (those that were deleted). Delete them from unity.
-    var DeletedKeys = unityServerDict.Keys.Except(localServerDict.Keys);
-    foreach(var key in DeletedKeys)
+    void ConvertToThreadSafeDict(Dictionary<int, DeviceData> localServerDict)
     {
-        unityServerDict.TryRemove(key, out _);
+        //Get keys in Unity dict that are missing in the updated 
+        //server (those that were deleted). Delete them from unity.
+        var DeletedKeys = unityServerDict.Keys.Except(localServerDict.Keys);
+        foreach(var key in DeletedKeys)
+        {
+            unityServerDict.TryRemove(key, out _);
 
-        playerObjDict.Remove(key);
-        //Debug.Log(playerObjDict + "DELETED");
-    }
+            if (playerObjDict.ContainsKey(key))
+            {
+                Destroy(playerObjDict[key]);
+                playerObjDict.Remove(key);
+            }
+        }
 
-    // First update dictionary and track which ones are new
-    foreach (KeyValuePair<int, DeviceData> pair in localServerDict)
-    {
-        bool isNew = !unityServerDict.ContainsKey(pair.Key);
-        
-        unityServerDict.AddOrUpdate
-        (
-            pair.Key,           
-            pair.Value,         
-            (key, oldValue) => pair.Value 
-        );
+        // First update dictionary and track which ones are new
+        foreach (KeyValuePair<int, DeviceData> pair in localServerDict)
+        {
+            bool isNew = !unityServerDict.ContainsKey(pair.Key);
+            
+            unityServerDict.AddOrUpdate(
+                pair.Key,           
+                pair.Value,         
+                (key, oldValue) => pair.Value 
+            );
 
         // If this was a new key, create a ball
         if (isNew)
         {
             GameObject newBall = Instantiate(ballFab);
-            newBall.transform.position = new Vector3(0,20f,0);
+            newBall.transform.position = new Vector3(0, 20f, 0);
             newBall.GetComponent<Ball>().Init(pair.Key);
-
-            var isInfected = GameSetup.Instance.GameStarted;
-            newBall.GetComponent<PlayerTeam>().SetTeam(isInfected);
-
             playerObjDict[pair.Key] = newBall;
-            //Debug.Log(playerObjDict.Keys);
+        }
         }
     }
-}
 
-public class ScoreboardData
-{
-    public string userID;
-    public string username;    
-    public bool isAlive;
-}
-
-private IEnumerator PostToScoreboard(string userID, string username, bool isAlive)
-{
-    ScoreboardData data = new ScoreboardData
+    void OnDestroy()
     {
-        userID = userID,
-        username = username,
-        isAlive = isAlive
-    };
-
-    string jsonData = JsonUtility.ToJson(data);
-    
-    UnityWebRequest request = new UnityWebRequest("http://localhost:8080/scoreboard", "POST");
-    byte[] bodyRaw = System.Text.Encoding.UTF8.GetBytes(jsonData);
-    request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-    request.downloadHandler = new DownloadHandlerBuffer();
-    request.SetRequestHeader("Content-Type", "application/json");
-
-    yield return request.SendWebRequest();
-
-    if (request.result != UnityWebRequest.Result.Success)
-    {
-        Debug.LogError($"Error: {request.error}");
+        if (cancellationToken != null)
+        {
+            cancellationToken.Cancel();
+            cancellationToken.Dispose();
+        }
+        
+        if (webSocket != null && 
+            (webSocket.State == WebSocketState.Open || webSocket.State == WebSocketState.Connecting))
+        {
+            webSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Application closing", 
+                CancellationToken.None).Wait();
+        }
     }
-    else
-    {
-        Debug.Log("Scoreboard updated successfully!");
-    }
-}
-
-void Update()
-{
-    foreach (var pair in unityServerDict)
-{
-    //Debug.Log($"ID: {pair.Key}, Username: {pair.Value.username} FB Tilt: {pair.Value.fb_tilt}, LR Tilt: {pair.Value.lr_tilt}");
-}
-}
-
 }
