@@ -835,6 +835,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3070454757381388859, guid: 9abd2e617f6145b459338433614ce6dc, type: 3}
+      propertyPath: cubemapFaces
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3070454757381388859, guid: 9abd2e617f6145b459338433614ce6dc, type: 3}
       propertyPath: domemasterResolution
       value: 2048
       objectReference: {fileID: 0}
@@ -2525,7 +2529,7 @@ PrefabInstance:
     - target: {fileID: 1782313659555886823, guid: f85532f58bbab6d46a1750fe6db5d516, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 6871f3e5040412742a16b47f0cc2ac61, type: 3}
+      objectReference: {fileID: 21300000, guid: 36016d09d7b7e18449d7e3cb1f97b5d4, type: 3}
     - target: {fileID: 3351143974154386668, guid: f85532f58bbab6d46a1750fe6db5d516, type: 3}
       propertyPath: m_SizeDelta.y
       value: 200
